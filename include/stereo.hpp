@@ -311,7 +311,7 @@ void StereoCalibration::stereo_calibration(YAML::Node node)
     string pose_path = results_dir + "relative_camera_poses.txt";
     std::ofstream writeFile(pose_path.data());
     bool save_results = writeFile.is_open();
-    string header = "Relative poses described in camera0 coordinates\n";
+    string header = "Relative poses described in camera0 coordinates (p_0 = T_i^0 p_i)\n";
     cout << header;
     if (writeFile.is_open())
     {
@@ -326,13 +326,13 @@ void StereoCalibration::stereo_calibration(YAML::Node node)
     for (int i = 0; i < n_camera - 1; i++)
     {
         se3 E = extrinsics[i];
-        string message = "camera0to" + to_string(i + 1) + ": fail\n";
+        string message = "T_" + to_string(i + 1) +"^"+ ": fail\n";
         if (success[i])
         {
-            message = "camera0to" + to_string(i + 1) + ":\t" + E.to_string() + "\n";
-            table.add_row({"camera0to" + to_string(i + 1), to_stringf(E.rot[0], 4), to_stringf(E.rot[1], 4), to_stringf(E.rot[2], 4), to_stringf(E.trans[0], 4), to_stringf(E.trans[1], 4), to_stringf(E.trans[2], 4)});
+            message = "T_" + to_string(i + 1) +"^"+ ":\t" + E.to_string() + "\n";
+            table.add_row({"T_" + to_string(i + 1) +"^", to_stringf(E.rot[0], 4), to_stringf(E.rot[1], 4), to_stringf(E.rot[2], 4), to_stringf(E.trans[0], 4), to_stringf(E.trans[1], 4), to_stringf(E.trans[2], 4)});
         }
-        else table.add_row({"camera0to" + to_string(i + 1), "fail", fail_icon, fail_icon, fail_icon, fail_icon, fail_icon});
+        else table.add_row({"T_" + to_string(i + 1) +"^", "fail", fail_icon, fail_icon, fail_icon, fail_icon, fail_icon});
 
         if (writeFile.is_open())
         {
